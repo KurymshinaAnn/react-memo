@@ -6,6 +6,13 @@ export function SelectLevelPage() {
     <div className={styles.container}>
       <div className={styles.modal}>
         <h1 className={styles.title}>Выбери сложность</h1>
+        <div className={styles.mode}>
+          <label className={styles.label}>
+            <input type="checkbox" />
+            <span className={styles.slider} />
+          </label>
+          <h2 className={styles.text}>Упрощенная игра</h2>
+        </div>
         <ul className={styles.levels}>
           <li className={styles.level}>
             <Link className={styles.levelLink} to="/game/3">
