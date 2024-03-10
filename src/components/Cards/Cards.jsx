@@ -195,7 +195,19 @@ export function Cards({ pairsCount = 3, previewSeconds = 10 }) {
             </>
           )}
         </div>
-        {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+        {status === STATUS_IN_PROGRESS ? (
+          <>
+            <div className={styles.counterBox}>
+              <h2 className={styles.counterText}>Количество попыток 3</h2>
+              <div className={styles.counterBlock}>
+                <div className={styles.counter}></div>
+                <div className={styles.counter}></div>
+                <div className={styles.counter}></div>
+              </div>
+            </div>
+            <Button onClick={resetGame}>Начать заново</Button>
+          </>
+        ) : null}
       </div>
 
       <div className={styles.cards}>
