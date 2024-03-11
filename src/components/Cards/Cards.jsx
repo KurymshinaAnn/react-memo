@@ -47,7 +47,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
   const [cards, setCards] = useState([]);
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW);
-  //TODO: Число попыток в игре - это стейт
+  // Число попыток в игре
   const [attemptCount, setAttemptCount] = useState(isSimple ? 3 : 1);
 
   // Дата начала игры
@@ -132,22 +132,18 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
-      console.log(attemptCount);
+      // Игроку дается 1 или 3 попытки в зависимости от сложности игры
+      // Если выбранная карта не верная, она показывается 1.5 секунды
+      // "Игрок проиграл" если все попытки исчерпаны
       let attempts = attemptCount - 1;
-      console.log(attempts);
       if (attempts > 0) {
         setAttemptCount(attempts);
-        console.log(cards);
         let cardCopy = cards;
         setTimeout(() => {
           setCards(cardCopy);
-        }, 2000);
+        }, 1500);
         return;
       }
-      //TODO: Если у нас остались еще попытки то уменьшаем количество попыток на 1
-      //TODO: и продолжаем игру
-      //Иначе если попыток не осталось то вызываем finishGame
-      //
       finishGame(STATUS_LOST);
       return;
     }
