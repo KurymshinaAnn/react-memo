@@ -5,6 +5,7 @@ import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import { Counter } from "../Counter/Counter";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -39,12 +40,15 @@ function getTimerValue(startDate, endDate) {
  * Основной компонент игры, внутри него находится вся игровая механика и логика.
  * pairsCount - сколько пар будет в игре
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
+ * isSimple - сложность игры
  */
-export function Cards({ pairsCount = 3, previewSeconds = 10 }) {
+export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false }) {
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW);
+  // Число попыток в игре
+  const [attemptCount, setAttemptCount] = useState(isSimple ? 3 : 1);
 
   // Дата начала игры
   const [gameStartDate, setGameStartDate] = useState(null);
@@ -73,6 +77,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 10 }) {
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
+    setAttemptCount(isSimple ? 3 : 1);
   }
 
   /**
@@ -127,6 +132,18 @@ export function Cards({ pairsCount = 3, previewSeconds = 10 }) {
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
+      // Игроку дается 1 или 3 попытки в зависимости от сложности игры
+      // Если выбранная карта не верная, она показывается 1.5 секунды
+      // "Игрок проиграл" если все попытки исчерпаны
+      let attempts = attemptCount - 1;
+      if (attempts > 0) {
+        setAttemptCount(attempts);
+        let cardCopy = cards;
+        setTimeout(() => {
+          setCards(cardCopy);
+        }, 1500);
+        return;
+      }
       finishGame(STATUS_LOST);
       return;
     }
@@ -195,7 +212,12 @@ export function Cards({ pairsCount = 3, previewSeconds = 10 }) {
             </>
           )}
         </div>
-        {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+        {status === STATUS_IN_PROGRESS ? (
+          <>
+            {isSimple ? <Counter maxAttempts={3} attempts={attemptCount}></Counter> : null}
+            <Button onClick={resetGame}>Начать заново</Button>
+          </>
+        ) : null}
       </div>
 
       <div className={styles.cards}>
