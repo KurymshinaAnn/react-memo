@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
 import { useState } from "react";
 import { gameModes } from "../../utils/game-modes";
+import { Button } from "../../components/Button/Button";
 
 export function SelectLevelPage() {
   const [simpleGame, setSimpleGame] = useState(false);
@@ -19,7 +20,7 @@ export function SelectLevelPage() {
             <input type="checkbox" onChange={toggleSimpleGame} value={simpleGame} />
             <span className={styles.slider} />
           </label>
-          <h2 className={styles.text}>Упрощенная игра</h2>
+          <h2 className={styles.text}>Упрощенная игра (3 жизни)</h2>
         </div>
         <ul className={styles.levels}>
           <li className={styles.level}>
@@ -38,6 +39,10 @@ export function SelectLevelPage() {
             </Link>
           </li>
         </ul>
+        <Button onClick={""}>Играть</Button>
+        <Link className={styles.boardLink} to={"/leaderboard"}>
+          Перейти к лидерборду
+        </Link>
       </div>
     </div>
   );

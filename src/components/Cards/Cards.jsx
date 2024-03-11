@@ -106,7 +106,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
 
     setCards(nextCards);
 
-    const isPlayerWon = nextCards.every(card => card.open);
+    const isPlayerWon = true; //nextCards.every(card => card.open);
 
     // Победа - все карты на поле открыты
     if (isPlayerWon) {
@@ -236,6 +236,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
         <div className={styles.modalContainer}>
           <EndGameModal
             isWon={status === STATUS_WON}
+            isWorthy={!isSimple && pairsCount === 9}
             gameDurationSeconds={timer.seconds}
             gameDurationMinutes={timer.minutes}
             onClick={resetGame}

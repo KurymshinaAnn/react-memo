@@ -7,6 +7,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-top: 120px;
 }
 
 .image {
@@ -25,6 +26,18 @@
   line-height: 48px;
 
   margin-bottom: 28px;
+  text-align: center 
+}
+
+.input {
+  width: 220px;
+  height: 30px;
+	font-size: 13px;
+	padding: 6px 0 4px 10px;
+	border: none;
+	background: #fff;
+	border-radius: 10px;
+  margin-bottom: 30px;
 }
 
 .description {
@@ -48,4 +61,16 @@
   line-height: 72px;
 
   margin-bottom: 40px;
+}
+
+.boardLink {
+  color: #004980;
+  text-align: center;
+  font-variant-numeric: lining-nums proportional-nums;
+  font-family: StratosSkyeng;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 48px;
+  margin-bottom: 120px;
 }
