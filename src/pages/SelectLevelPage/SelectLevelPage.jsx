@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
 import { useState } from "react";
+import { gameModes } from "../../utils/game-modes";
 
 export function SelectLevelPage() {
   const [simpleGame, setSimpleGame] = useState(false);
@@ -22,17 +23,17 @@ export function SelectLevelPage() {
         </div>
         <ul className={styles.levels}>
           <li className={styles.level}>
-            <Link className={styles.levelLink} to={"/game/3?simpleGame=" + simpleGame}>
+            <Link className={styles.levelLink} to={"/game/" + (simpleGame ? gameModes.SIMPLE : gameModes.HARD) + "/3"}>
               1
             </Link>
           </li>
           <li className={styles.level}>
-            <Link className={styles.levelLink} to={"/game/6?simpleGame=" + simpleGame}>
+            <Link className={styles.levelLink} to={"/game/" + (simpleGame ? gameModes.SIMPLE : gameModes.HARD) + "/6"}>
               2
             </Link>
           </li>
           <li className={styles.level}>
-            <Link className={styles.levelLink} to={"/game/9?simpleGame=" + simpleGame}>
+            <Link className={styles.levelLink} to={"/game/" + (simpleGame ? gameModes.SIMPLE : gameModes.HARD) + "/9"}>
               3
             </Link>
           </li>
