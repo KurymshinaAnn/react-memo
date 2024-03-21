@@ -106,7 +106,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
 
     setCards(nextCards);
 
-    const isPlayerWon = true; //nextCards.every(card => card.open);
+    const isPlayerWon = nextCards.every(card => card.open);
+    //для быстрой проверки третьей сложной игры
+    // const isPlayerWon = true;
 
     // Победа - все карты на поле открыты
     if (isPlayerWon) {
