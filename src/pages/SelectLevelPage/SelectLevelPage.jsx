@@ -1,10 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
 import { useState } from "react";
 import { gameModes } from "../../utils/game-modes";
+import { Button } from "../../components/Button/Button";
 
 export function SelectLevelPage() {
   const [simpleGame, setSimpleGame] = useState(false);
+  const [level, setLevel] = useState(0);
+  const navigate = useNavigate();
+
+  const onLevelSelected = e => {
+    const newLevel = e.target.getAttribute("data-level");
+    setLevel(parseInt(newLevel));
+  };
+
+  const onGameStart = () => {
+    navigate("/game/" + (simpleGame ? gameModes.SIMPLE : gameModes.HARD) + "/" + level);
+  };
 
   const toggleSimpleGame = () => {
     setSimpleGame(state => !state);
@@ -19,25 +31,29 @@ export function SelectLevelPage() {
             <input type="checkbox" onChange={toggleSimpleGame} value={simpleGame} />
             <span className={styles.slider} />
           </label>
-          <h2 className={styles.text}>Упрощенная игра</h2>
+          <h2 className={styles.text}>Упрощенная игра (3 жизни)</h2>
         </div>
         <ul className={styles.levels}>
           <li className={styles.level}>
-            <Link className={styles.levelLink} to={"/game/" + (simpleGame ? gameModes.SIMPLE : gameModes.HARD) + "/3"}>
+            <a className={styles.levelLink} data-level={3} onClick={onLevelSelected}>
               1
-            </Link>
+            </a>
           </li>
           <li className={styles.level}>
-            <Link className={styles.levelLink} to={"/game/" + (simpleGame ? gameModes.SIMPLE : gameModes.HARD) + "/6"}>
+            <a className={styles.levelLink} data-level={6} onClick={onLevelSelected}>
               2
-            </Link>
+            </a>
           </li>
           <li className={styles.level}>
-            <Link className={styles.levelLink} to={"/game/" + (simpleGame ? gameModes.SIMPLE : gameModes.HARD) + "/9"}>
+            <a className={styles.levelLink} data-level={9} onClick={onLevelSelected}>
               3
-            </Link>
+            </a>
           </li>
         </ul>
+        <Button onClick={onGameStart}>Играть</Button>
+        <Link className={styles.boardLink} to={"/leaderboard"}>
+          Перейти к лидерборду
+        </Link>
       </div>
     </div>
   );
