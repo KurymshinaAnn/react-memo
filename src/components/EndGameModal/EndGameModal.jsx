@@ -9,7 +9,17 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { createLeaderboard } from "../../api/api";
 
-export function EndGameModal({ isWon, isWorthy, gameDurationSeconds, gameDurationMinutes, onClick }) {
+export function EndGameModal({
+  isWon,
+  usedSuperpowers,
+  isHard,
+  level,
+  gameDurationSeconds,
+  gameDurationMinutes,
+  onClick,
+}) {
+  const isWorthy = level === 9;
+
   const title = isWon ? (isWorthy ? "Вы попали на Лидерборд!" : "Вы победили!") : "Вы проиграли!";
 
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl;
@@ -30,7 +40,14 @@ export function EndGameModal({ isWon, isWorthy, gameDurationSeconds, gameDuratio
   }
 
   function saveResult() {
-    createLeaderboard({ name, time: getSecs() }).then(() => {
+    const achievements = [];
+    if (isHard) {
+      achievements.push(1);
+    }
+    if (usedSuperpowers.length === 0) {
+      achievements.push(2);
+    }
+    createLeaderboard({ name, time: getSecs(), achievements }).then(() => {
       setSaved(true);
     });
   }

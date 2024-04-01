@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
 import { useState } from "react";
+import cn from "classnames";
+
 import { gameModes } from "../../utils/game-modes";
 import { Button } from "../../components/Button/Button";
 
@@ -34,17 +36,17 @@ export function SelectLevelPage() {
           <h2 className={styles.text}>Упрощенная игра (3 жизни)</h2>
         </div>
         <ul className={styles.levels}>
-          <li className={styles.level}>
+          <li className={cn(styles.level, level === 3 ? styles.level_selected : null)}>
             <a className={styles.levelLink} data-level={3} onClick={onLevelSelected}>
               1
             </a>
           </li>
-          <li className={styles.level}>
+          <li className={cn(styles.level, level === 6 ? styles.level_selected : null)}>
             <a className={styles.levelLink} data-level={6} onClick={onLevelSelected}>
               2
             </a>
           </li>
-          <li className={styles.level}>
+          <li className={cn(styles.level, level === 9 ? styles.level_selected : null)}>
             <a className={styles.levelLink} data-level={9} onClick={onLevelSelected}>
               3
             </a>
