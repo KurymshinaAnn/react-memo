@@ -113,6 +113,10 @@ input:checked+.slider:before {
   background: #fff;
 }
 
+.level_selected {
+  background: #7ac100;
+}
+
 .levelLink {
   color: #004980;
   text-align: center;

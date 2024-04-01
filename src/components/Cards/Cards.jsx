@@ -1,11 +1,16 @@
 import { shuffle } from "lodash";
 import { useEffect, useState } from "react";
-import { generateDeck } from "../../utils/cards";
 import styles from "./Cards.module.css";
+
+import { generateDeck } from "../../utils/cards";
+import { Counter } from "../Counter/Counter";
+
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
-import { Counter } from "../Counter/Counter";
+
+import eyesImageUrl from "./images/eyes.svg";
+import secondCardImageUrl from "./images/second_card.svg";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -14,8 +19,10 @@ const STATUS_WON = "STATUS_WON";
 const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS";
 // Начало игры: игрок видит все карты в течении нескольких секунд
 const STATUS_PREVIEW = "STATUS_PREVIEW";
+// Идет игра: активирована суперспособность прозрение, все карты открыты 5 сек
+const STATUS_INSIGHT = "STATUS_INSIGHT";
 
-function getTimerValue(startDate, endDate) {
+function getTimerValue(startDate, endDate, correction = 0) {
   if (!startDate && !endDate) {
     return {
       minutes: 0,
@@ -27,7 +34,7 @@ function getTimerValue(startDate, endDate) {
     endDate = new Date();
   }
 
-  const diffInSecconds = Math.floor((endDate.getTime() - startDate.getTime()) / 1000);
+  const diffInSecconds = Math.floor((endDate.getTime() - startDate.getTime()) / 1000) - correction;
   const minutes = Math.floor(diffInSecconds / 60);
   const seconds = diffInSecconds % 60;
   return {
@@ -42,7 +49,10 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  * isSimple - сложность игры
  */
+
 export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false }) {
+  const imgEye = eyesImageUrl;
+  const imgSecCard = secondCardImageUrl;
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -61,6 +71,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
     minutes: 0,
   });
 
+  // Массив активированных подсказок
+  const [activatedSuperpowers, setActivatedSuperpowers] = useState([]);
+
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
     setStatus(status);
@@ -78,6 +91,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
     setAttemptCount(isSimple ? 3 : 1);
+    setActivatedSuperpowers([]);
   }
 
   /**
@@ -184,12 +198,54 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
   // Обновляем значение таймера в интервале
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setTimer(getTimerValue(gameStartDate, gameEndDate));
+      if (status !== STATUS_INSIGHT) {
+        if (activatedSuperpowers.includes("insight")) {
+          setTimer(getTimerValue(gameStartDate, gameEndDate, 5));
+        } else {
+          setTimer(getTimerValue(gameStartDate, gameEndDate));
+        }
+      }
     }, 300);
     return () => {
       clearInterval(intervalId);
     };
-  }, [gameStartDate, gameEndDate]);
+  }, [status, gameStartDate, gameEndDate, activatedSuperpowers]);
+
+  const activateEyesSuperpower = () => {
+    if (activatedSuperpowers.includes("insight")) {
+      return;
+    }
+    setActivatedSuperpowers(value => ["insight", ...value]);
+    setStatus(STATUS_INSIGHT);
+    setTimeout(() => {
+      setStatus(STATUS_IN_PROGRESS);
+    }, 5000);
+  };
+
+  const activateCardsSuperpower = () => {
+    if (activatedSuperpowers.includes("openCards")) {
+      return;
+    }
+    const closedCards = cards.filter(card => !card.open);
+    if (closedCards.length < 2) {
+      return;
+    }
+    const candidate = closedCards.find(
+      card => closedCards.find(c => c.suit === card.suit && c.rank === card.rank && card.id !== c.id) !== undefined,
+    );
+    const secondCard = closedCards.find(
+      card => card.suit === candidate.suit && card.rank === candidate.rank && card.id !== candidate.id,
+    );
+    const newCards = cards.map(card => {
+      if (card.id === candidate.id) {
+        card.open = true;
+      }
+      return card;
+    });
+    setCards(newCards);
+    openCard(secondCard);
+    setActivatedSuperpowers(value => ["openCards", ...value]);
+  };
 
   return (
     <div className={styles.container}>
@@ -214,9 +270,15 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
             </>
           )}
         </div>
-        {status === STATUS_IN_PROGRESS ? (
+        {status === STATUS_IN_PROGRESS || status === STATUS_INSIGHT ? (
           <>
             {isSimple ? <Counter maxAttempts={3} attempts={attemptCount}></Counter> : null}
+            <div className={styles.imgGroup}>
+              <img className={styles.image} src={imgEye} alt={imgEye} onClick={activateEyesSuperpower} />
+              <div className={styles.imgBlock} onClick={activateCardsSuperpower}>
+                <img className={styles.imageCard} src={imgSecCard} alt={imgSecCard} />
+              </div>
+            </div>
             <Button onClick={resetGame}>Начать заново</Button>
           </>
         ) : null}
@@ -238,7 +300,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 10, isSimple = false })
         <div className={styles.modalContainer}>
           <EndGameModal
             isWon={status === STATUS_WON}
-            isWorthy={!isSimple && pairsCount === 9}
+            usedSuperpowers={activatedSuperpowers}
+            isHard={!isSimple}
+            level={pairsCount}
             gameDurationSeconds={timer.seconds}
             gameDurationMinutes={timer.minutes}
             onClick={resetGame}

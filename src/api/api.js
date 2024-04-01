@@ -1,5 +1,5 @@
-const API_URL_LIST = "https://wedev-api.sky.pro/api/leaderboard";
-const API_URL_ADD_WINNER = "https://wedev-api.sky.pro/api/leaderboard";
+const API_URL_LIST = "https://wedev-api.sky.pro/api/v2/leaderboard";
+const API_URL_ADD_WINNER = "https://wedev-api.sky.pro/api/v2/leaderboard";
 
 export async function getList() {
   const response = await fetch(API_URL_LIST, {
@@ -14,12 +14,13 @@ export async function getList() {
   return data;
 }
 
-export async function createLeaderboard({ name, time }) {
+export async function createLeaderboard({ name, time, achievements }) {
   const response = await fetch(API_URL_ADD_WINNER, {
     method: "POST",
     body: JSON.stringify({
       name,
       time,
+      achievements,
     }),
   });
 

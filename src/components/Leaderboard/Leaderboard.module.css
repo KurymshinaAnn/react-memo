@@ -56,6 +56,7 @@
 
 .winnerTitleNumber,
 .winnerTitleName,
+.winnerTitleAchievements,
 .winnerTitleTime {
     color: #979797;
     text-align: left;
@@ -68,21 +69,26 @@
 }
 
 .winnerTitleNumber {
-    width: 150px;
-    padding-left: 20px;
+    width: 110px;
+    padding-left: 15px;
 
 }
 
 .winnerTitleName {
-    width: 365px;
+    width: 265px;
+}
+
+.winnerTitleAchievements {
+    width: 160px;
 }
 
 .winnerTitleTime {
-    width: 105px;
+    width: 70px;
 }
 
 .winnerDataUserNumber,
 .winnerDataUserName,
+.winnerDataUserAchievements,
 .winnerDataUserTime {
     color: #000;
     text-align: left;
@@ -95,14 +101,25 @@
 }
 
 .winnerDataUserNumber {
-    width: 150px;
-    padding-left: 20px;
+    width: 110px;
+    padding-left: 15px;
 }
 
 .winnerDataUserName {
-    width: 365px;
+    width: 265px;
+}
+
+.winnerDataUserAchievements {
+    width: 160px;
+    height: 40px;
 }
 
 .winnerDataUserTime {
-    width: 105px;
+    width: 70px;
+}
+
+.image {
+    width: 28px;
+    height: 28px;
+    padding-top: 8px;
 }
